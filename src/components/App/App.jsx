@@ -33,7 +33,7 @@ function App() {
     try {
       const url = `https://api.themoviedb.org/3/search/movie?query=${query}`;
       const token =
-        'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYzY3YTQ3ZDFlYjRmOTg2NjNiYWE1YjljZWFhZjM5YiIsInN1YiI6IjY2NjFkNzAxNWE3Y2M3N2U4MmNiYjhmMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.lr6mApkHpa51x8ZPDeW1l4pp_-UlafHNI2_NBU_sc2Q';
+        'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxZDBkYjIwNWY0YWZjNjVlYmY2YWRiZjFjOWI3M2RjNiIsIm5iZiI6MTcxOTE3MzUyMi42MzIyODIsInN1YiI6IjY0NDJmMTNkZDM1ZGVhMDUwNWZiMWViYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.iNVfOYc16I-CbVU3uSjKXPr37OIjNOAXbEJ1F3mkg34';
       const options = {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -51,7 +51,7 @@ function App() {
       try {
         const url = 'https://api.themoviedb.org/3/trending/movie/day';
         const token =
-          'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYzY3YTQ3ZDFlYjRmOTg2NjNiYWE1YjljZWFhZjM5YiIsInN1YiI6IjY2NjFkNzAxNWE3Y2M3N2U4MmNiYjhmMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.lr6mApkHpa51x8ZPDeW1l4pp_-UlafHNI2_NBU_sc2Q';
+          'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxZDBkYjIwNWY0YWZjNjVlYmY2YWRiZjFjOWI3M2RjNiIsIm5iZiI6MTcxOTE3MzUyMi42MzIyODIsInN1YiI6IjY0NDJmMTNkZDM1ZGVhMDUwNWZiMWViYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.iNVfOYc16I-CbVU3uSjKXPr37OIjNOAXbEJ1F3mkg34';
         const options = {
           headers: {
             Authorization: `Bearer ${token}`,
