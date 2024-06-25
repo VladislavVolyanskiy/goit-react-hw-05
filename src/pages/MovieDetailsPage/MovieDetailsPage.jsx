@@ -1,72 +1,81 @@
-import { useEffect, useState, Suspense } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import PropTypes from 'prop-types';
-import MovieCast from '../../components/MovieCast/MovieCast.jsx';
-import MovieReviews from '../../components/MovieReviews/MovieReviews.jsx';
+import { Suspense, useEffect, useRef, useState } from 'react';
+import {
+  Link,
+  NavLink,
+  Outlet,
+  useLocation,
+  useParams,
+} from 'react-router-dom';
+import { getMovieDetails } from '../../api/movies';
+import Loader from '../../components/Loader/Loader';
+import ErrorMessage from '../../components/ErrorMsg/ErrorMsg';
+import css from './MovieDetailsPage.module.css';
 
-const MovieDetailsPage = ({ onSelectMovie, handleGoBack }) => {
+const MovieDetailsPage = () => {
   const { movieId } = useParams();
   const [movie, setMovie] = useState(null);
-  // const location = useLocation();
-  // const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const location = useLocation();
+  const goBack = useRef(location.state ?? '/movies');
 
   useEffect(() => {
-    const fetchMovieDetails = async () => {
-      const url = `https://api.themoviedb.org/3/movie/${movieId}`;
-      const token =
-        'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYzY3YTQ3ZDFlYjRmOTg2NjNiYWE1YjljZWFhZjM5YiIsInN1YiI6IjY2NjFkNzAxNWE3Y2M3N2U4MmNiYjhmMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.lr6mApkHpa51x8ZPDeW1l4pp_-UlafHNI2_NBU_sc2Q';
-      const options = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
+    const fetchMovie = async () => {
       try {
-        const { data } = await axios.get(url, options);
-        setMovie(data);
-        onSelectMovie(data);
+        const movieData = await getMovieDetails(movieId);
+        setMovie(movieData);
+        setIsLoading(true);
+        setError(false);
       } catch (error) {
-        console.error('Error fetching movie details', error);
+        setError(true);
+      } finally {
+        setIsLoading(false);
       }
     };
-    fetchMovieDetails();
-  }, [movieId, onSelectMovie]);
-
-  // const handleGoBack = () => {
-  //   const from = location.state?.from || "/movies";
-  //   navigate(from);
-  // };
-
-  if (!movie) {
-    return <div>Loading...</div>;
-  }
-
-  const imageBaseUrl = 'https://image.tmdb.org/t/p/w500';
+    fetchMovie();
+  }, [movieId]);
 
   return (
     <div>
-      <h2>{movie.title}</h2>
-      {movie.poster_path && (
-        <img
-          src={`${imageBaseUrl}${movie.poster_path}`}
-          alt={movie.title}
-          style={{ width: '300px', marginBottom: '20px' }}
-        />
+      <Link to={goBack.current} className={css.goBackLink}>
+        Go back
+      </Link>
+      {isLoading && <Loader />}
+      {error && <ErrorMessage />}
+
+      {movie && (
+        <div className={css.detailsContainer}>
+          <img
+            src={
+              movie.poster_path
+                ? `https://image.tmdb.org/t/p/w300${movie.poster_path}`
+                : `http://www.suryalaya.org/images/no_image.jpg`
+            }
+            alt="Poster"
+          />
+          <h4 className={css.movieTitle}>{movie.title}</h4>
+          <p className={css.titleItem}>Overview: {movie.overview}</p>
+        </div>
       )}
-      <p>{movie.overview}</p>
-      <Suspense fallback={<div>Loading...</div>}>
-        <MovieCast movieId={movieId} />
-        <MovieReviews movieId={movieId} />
+      {!isLoading && !error && (
+        <ul className={css.movieDetailsNavigation}>
+          <li>
+            <NavLink className={css.movieDetails} to="cast">
+              Cast
+            </NavLink>
+          </li>
+          <li>
+            <NavLink className={css.movieDetails} to="reviews">
+              Reviews
+            </NavLink>
+          </li>
+        </ul>
+      )}
+      <Suspense fallback={<div>Loading details...</div>}>
+        <Outlet />
       </Suspense>
-      <button onClick={handleGoBack}>Go back</button>
     </div>
   );
-};
-
-MovieDetailsPage.propTypes = {
-  onSelectMovie: PropTypes.func.isRequired,
-  handleGoBack: PropTypes.func.isRequired,
 };
 
 export default MovieDetailsPage;

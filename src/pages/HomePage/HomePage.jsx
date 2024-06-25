@@ -1,36 +1,36 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-import MovieList from '../../components/MovieList/MovieList.jsx';
+import { getTrendingMovies } from '../../api/movies';
+import ErrorMessage from '../../components/ErrorMsg/ErrorMsg';
+import MovieList from '../../components/MovieList/MovieList';
+import Loader from '../../components/Loader/Loader';
 
 const HomePage = () => {
   const [movies, setMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    const fetchTrendingMovies = async () => {
-      const url = 'https://api.themoviedb.org/3/trending/movie/day';
-      const token =
-        'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYzY3YTQ3ZDFlYjRmOTg2NjNiYWE1YjljZWFhZjM5YiIsInN1YiI6IjY2NjFkNzAxNWE3Y2M3N2U4MmNiYjhmMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.lr6mApkHpa51x8ZPDeW1l4pp_-UlafHNI2_NBU_sc2Q';
-      const options = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
+    const fetchMovies = async () => {
       try {
-        const { data } = await axios.get(url, options);
-        setMovies(data.results);
+        setIsLoading(true);
+        const movies = await getTrendingMovies();
+        setMovies(movies.result);
+        setError(false);
       } catch (error) {
-        console.error('Error fetching trending movies', error);
+        setError(true);
+      } finally {
+        setIsLoading(false);
       }
     };
-    fetchTrendingMovies();
+    fetchMovies();
   }, []);
 
   return (
-    <div>
-      <h1>Trending movies</h1>
-      <MovieList movies={movies} />
-    </div>
+    <>
+      {error && <ErrorMessage />}
+      {isLoading && <Loader />}
+      {movies.length > 0 && <MovieList movies={movies} />}
+    </>
   );
 };
 

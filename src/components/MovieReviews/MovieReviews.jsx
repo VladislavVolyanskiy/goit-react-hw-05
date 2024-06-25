@@ -1,44 +1,61 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import { getMovieReviews } from '../../api/movies';
+import ErrorMessage from '../ErrorMsg/ErrorMsg';
+import Loader from '../Loader/Loader';
+import css from './MovieReviews.module.css';
 
-const MovieDetailsPage = () => {
+const MovieReviews = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [movieReviews, setMovieReviews] = useState();
   const { movieId } = useParams();
-  const [movie, setMovie] = useState(null);
-  // const navigate = useNavigate();
-  // const location = useLocation();
-
   useEffect(() => {
-    const fetchMovieDetails = async () => {
-      const url = `https://api.themoviedb.org/3/movie/${movieId}`;
-      const token =
-        'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiYzY3YTQ3ZDFlYjRmOTg2NjNiYWE1YjljZWFhZjM5YiIsInN1YiI6IjY2NjFkNzAxNWE3Y2M3N2U4MmNiYjhmMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.lr6mApkHpa51x8ZPDeW1l4pp_-UlafHNI2_NBU_sc2Q';
-      const options = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
+    const getReviews = async () => {
       try {
-        const { data } = await axios.get(url, options);
-        setMovie(data);
+        setIsLoading(true);
+        const reviews = await getMovieReviews(movieId);
+        setMovieReviews(reviews);
+
+        setError(false);
       } catch (error) {
-        console.error('Error fetching trending movies', error);
+        setError(true);
+      } finally {
+        setIsLoading(false);
       }
     };
-    fetchMovieDetails();
+    getReviews();
   }, [movieId]);
 
-  if (!movie) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <div>
-      <h3>Reviews</h3>
-      <p>{movie.overview}</p>
-    </div>
+    <>
+      {error && <ErrorMessage />}
+      {isLoading && <Loader />}
+      {!isLoading && !error && movieReviews?.results.length === 0 && (
+        <p className={css.noReviewsText}>
+          We don't have any reviews for this movie.
+        </p>
+      )}
+      <ul>
+        {movieReviews?.results.length > 0 &&
+          movieReviews?.results.map(review => (
+            <li key={review.id}>
+              <div className={css.reviewTitle}>
+                <img
+                  className={css.image}
+                  src={`https://image.tmdb.org/t/p/w200${review.author_details.avatar_path}`}
+                  alt={review.author}
+                />
+                <h3>{review.author}</h3>
+              </div>
+              <div className={css.reviewText}>
+                <p>{review.content}</p>
+                <p>Rating: {review.author_details.rating}</p>
+              </div>
+            </li>
+          ))}
+      </ul>
+    </>
   );
 };
-
-export default MovieDetailsPage;
+export default MovieReviews;

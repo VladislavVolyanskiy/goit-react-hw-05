@@ -1,0 +1,44 @@
+.button {
+  cursor: pointer;
+  height: 40px;
+  display: inline-block;
+  vertical-align: middle;
+  background-color: rgb(43, 110, 132);
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition-delay: 100ms;
+}
+
+.button:hover,
+.button:focus {
+  background-color: rgb(23, 70, 85);
+}
+
+.input {
+  padding: 10px;
+  margin: 10px;
+  display: flex;
+  border-color: rgb(23, 70, 85);
+  border-radius: 8px;
+  background-color: rgba(2, 27, 35, 0.355);
+  color: rgb(250, 250, 250);
+}
+
+.input:focus .input:active {
+  border: 2px;
+  border-color: rgb(58, 121, 142);
+  background-color: rgba(135, 182, 197, 0.362);
+}
+
+.searchField {
+  width: 100%;
+  height: 50px;
+  background-color: rgba(135, 181, 197, 0.168);
+  padding: 10px;
+  margin: auto;
+}
+
+.search {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

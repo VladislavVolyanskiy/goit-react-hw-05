@@ -1,18 +1,30 @@
-import { NavLink } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import { NavLink } from "react-router-dom";
+import clsx from "clsx";
+import css from "./Navigation.module.css";
 
-const Navigation = ({ handleGoBack }) => {
-  return (
-    <nav>
-      <NavLink to="/">Home</NavLink>
-      <NavLink to="/movies">Movies</NavLink>
-      <button onClick={handleGoBack}>Back</button>
-    </nav>
-  );
+const buildLinkClass = ({ isActive }) => {
+  return clsx(css.link, isActive && css.active);
 };
 
-Navigation.propTypes = {
-  handleGoBack: PropTypes.func.isRequired,
+const Navigation = () => {
+  return (
+    <div className={css.navContainer}>
+      <nav>
+        <ul className={css.navList}>
+          <li>
+            <NavLink to="/" className={buildLinkClass}>
+              Home
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/movies" className={buildLinkClass}>
+              Search Movies
+            </NavLink>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  );
 };
 
 export default Navigation;

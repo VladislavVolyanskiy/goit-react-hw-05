@@ -1,102 +1,37 @@
-import { useState, useEffect, Suspense } from 'react';
-import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { Routes, Route } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
+// import css from './App.module.css';
+import Navigation from '../Navigation/Navigation';
 
-import HomePage from '../../pages/HomePage/HomePage.jsx';
-import MovieDetailsPage from '../../pages/MovieDetailsPage/MovieDetailsPage.jsx';
-import MoviesPage from '../../pages/MoviesPage/MoviesPage.jsx';
-import NotFoundPage from '../../pages/NotFoundPage/NotFoundPage.jsx';
+const HomePage = lazy(() => import('../../pages/HomePage/HomePage'));
+const MoviesSearchPage = lazy(() =>
+  import('../../pages/MoviesPage/MoviesPage')
+);
+const MovieDetailsPage = lazy(() =>
+  import('../../pages/MovieDetailsPage/MovieDetailsPage')
+);
+const NotFoundPage = lazy(() =>
+  import('../../pages/NotFoundPage/NotFoundPage')
+);
+const MovieCast = lazy(() => import('../MovieCast/MovieCast'));
+const MovieReviews = lazy(() => import('../MovieReviews/MovieReviews'));
 
-import Navigation from '../Navigation/Navigation.jsx';
-
-function App() {
-  const [trendingMovies, setTrendingMovies] = useState([]);
-  const [searchResults, setSearchResults] = useState([]);
-  const [selectedMovie, setSelectedMovie] = useState(null);
-
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const handleGoBack = () => {
-    if (location.state && location.state.from) {
-      navigate(location.state.from);
-    } else {
-      navigate('/movies');
-    }
-  };
-
-  const handleMovieSelection = movie => {
-    setSelectedMovie(movie);
-  };
-
-  const handleSearch = async query => {
-    try {
-      const url = `https://api.themoviedb.org/3/search/movie?query=${query}`;
-      const token =
-        'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxZDBkYjIwNWY0YWZjNjVlYmY2YWRiZjFjOWI3M2RjNiIsIm5iZiI6MTcxOTE3MzUyMi42MzIyODIsInN1YiI6IjY0NDJmMTNkZDM1ZGVhMDUwNWZiMWViYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.iNVfOYc16I-CbVU3uSjKXPr37OIjNOAXbEJ1F3mkg34';
-      const options = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      const { data } = await axios.get(url, options);
-      setSearchResults(data.results);
-    } catch (error) {
-      console.error('Error while searching for movies', error);
-    }
-  };
-
-  useEffect(() => {
-    const fetchTrendingMovies = async () => {
-      try {
-        const url = 'https://api.themoviedb.org/3/trending/movie/day';
-        const token =
-          'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxZDBkYjIwNWY0YWZjNjVlYmY2YWRiZjFjOWI3M2RjNiIsIm5iZiI6MTcxOTE3MzUyMi42MzIyODIsInN1YiI6IjY0NDJmMTNkZDM1ZGVhMDUwNWZiMWViYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.iNVfOYc16I-CbVU3uSjKXPr37OIjNOAXbEJ1F3mkg34';
-        const options = {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        };
-        const { data } = await axios.get(url, options);
-        setTrendingMovies(data.results);
-      } catch (error) {
-        console.error('Error getting trending movies', error);
-      }
-    };
-
-    fetchTrendingMovies();
-  }, []);
-
+const App = () => {
   return (
-    <>
-      <Navigation handleGoBack={handleGoBack} />
-      <Suspense fallback={<div>Loading...</div>}>
+    <div>
+      <Navigation />
+      <Suspense fallback={<div>Loading page...</div>}>
         <Routes>
-          <Route path="/" element={<HomePage movies={trendingMovies} />} />
-          <Route
-            path="/movies"
-            element={
-              <MoviesPage
-                onSearch={handleSearch}
-                searchResults={searchResults}
-                onSelectMovie={handleMovieSelection}
-              />
-            }
-          />
-          <Route
-            path="/movies/:movieId"
-            element={
-              <MovieDetailsPage
-                onSelectMovie={handleMovieSelection}
-                handleGoBack={handleGoBack}
-              />
-            }
-          />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/movies" element={<MoviesSearchPage />} />
+          <Route path="/movies/:movieId" element={<MovieDetailsPage />}>
+            <Route path="cast" element={<MovieCast />} />
+            <Route path="reviews" element={<MovieReviews />} />
+          </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
-    </>
+    </div>
   );
-}
-
+};
 export default App;
