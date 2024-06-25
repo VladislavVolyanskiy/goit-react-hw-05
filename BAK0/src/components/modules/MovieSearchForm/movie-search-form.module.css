@@ -1,0 +1,14 @@
+.form {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.form__input {
+  padding: 10px 5px;
+  border-radius: 5px;
+  width: 400px;
+}
+
+.form__btn {
+  margin-left: 20px;
+}

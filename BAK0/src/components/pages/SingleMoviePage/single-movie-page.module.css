@@ -1,0 +1,50 @@
+.movie__wrap {
+  display: flex;
+  margin-top: 40px;
+  box-shadow: -1px 0px 1px rgb(0 0 0 / 12%), -12px 11px 15px rgb(0 0 0 / 6%),
+    1px 4px 6px rgb(0 0 0 / 16%);
+}
+
+.info__wrap {
+  padding: 40px 40px;
+  text-align: left;
+}
+
+.movie__title {
+  display: inline-block;
+  transition: color 250ms linear;
+}
+
+.movie__title:hover,
+.movie__title:focus {
+  color: #f36721;
+}
+
+.movie__score,
+.movie__overviewTitle,
+.movie__overviewText,
+.movie__genresTitle,
+.movie__genresList {
+  margin-top: 10px;
+}
+.cast {
+  margin-top: 20px;
+  display: inline-block;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.cast:hover,
+.cast:focus {
+  transition: color 250ms linear;
+  color: #f36721;
+}
+
+.extraPages__list {
+  display: flex;
+  gap: 20px;
+}
+
+.active {
+  color: #f36721;
+}
