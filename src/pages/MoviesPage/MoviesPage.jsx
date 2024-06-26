@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Loader from '../../components/Loader/Loader';
 import MovieList from '../../components/MovieList/MovieList';
-import css from './MoviesPage.module.css';
+import ErrorMessage from '../../components/ErrorMsg/ErrorMsg';
 import { getMoviesByQuery } from '../../api/movies';
+import css from './MoviesPage.module.css';
 
 const MoviesPage = () => {
   const [query, setQuery] = useState('');
